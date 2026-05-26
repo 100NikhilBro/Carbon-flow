@@ -14,25 +14,31 @@ class DashboardSummaryAPIView(APIView):
 
     def get(self, request):
 
-        total_records = ESGRecord.objects.count()
+        company = request.user.company
 
-        approved_records = ESGRecord.objects.filter(
+        queryset = ESGRecord.objects.filter(
+            company=company
+        )
+
+        total_records = queryset.count()
+
+        approved_records = queryset.filter(
             review_status="approved"
         ).count()
 
-        pending_records = ESGRecord.objects.filter(
+        pending_records = queryset.filter(
             review_status="pending"
         ).count()
 
-        rejected_records = ESGRecord.objects.filter(
+        rejected_records = queryset.filter(
             review_status="rejected"
         ).count()
 
-        flagged_records = ESGRecord.objects.filter(
+        flagged_records = queryset.filter(
             is_flagged=True
         ).count()
 
-        total_emissions = ESGRecord.objects.aggregate(
+        total_emissions = queryset.aggregate(
             total=Sum("co2e_emissions")
         )["total"] or 0
 
@@ -52,8 +58,11 @@ class EmissionsByScopeAPIView(APIView):
 
     def get(self, request):
 
+        company = request.user.company
+
         data = (
             ESGRecord.objects
+            .filter(company=company)
             .values("scope")
             .annotate(
                 total_emissions=Coalesce(
@@ -73,8 +82,11 @@ class ReviewStatusAPIView(APIView):
 
     def get(self, request):
 
+        company = request.user.company
+
         data = (
             ESGRecord.objects
+            .filter(company=company)
             .values("review_status")
             .annotate(count=Count("id"))
             .order_by("review_status")
@@ -89,9 +101,14 @@ class FlaggedRecordsAPIView(APIView):
 
     def get(self, request):
 
+        company = request.user.company
+
         data = (
             ESGRecord.objects
-            .filter(is_flagged=True)
+            .filter(
+                company=company,
+                is_flagged=True
+            )
             .values(
                 "id",
                 "company__name",

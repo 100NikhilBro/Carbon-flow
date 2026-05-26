@@ -66,8 +66,13 @@ class ApproveESGRecordAPIView(APIView):
 
         channel_layer = get_channel_layer()
 
+        group_name = (
+    f"company_{record.company.id}"
+)
+        
+
         async_to_sync(channel_layer.group_send)(
-            "esg_updates",
+            group_name,
             {
                 "type": "send_esg_update",
                 "data": {
@@ -134,8 +139,12 @@ class RejectESGRecordAPIView(APIView):
 
         channel_layer = get_channel_layer()
 
+        group_name = (
+    f"company_{record.company.id}"
+)
+
         async_to_sync(channel_layer.group_send)(
-            "esg_updates",
+            group_name,
             {
                 "type": "send_esg_update",
                 "data": {
