@@ -1,90 +1,20 @@
-# =========================
-# PYTHON
-# =========================
-__pycache__/
-*.py[cod]
-*$py.class
-
-# =========================
-# DJANGO
-# =========================
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# =========================
-# ENV FILES
-# =========================
-.env
-.env.*
-!.env.example
-
-# =========================
-# VIRTUAL ENV
-# =========================
+# virtual env
 venv/
-env/
-ENV/
 
-# =========================
-# DJANGO MEDIA
-# =========================
+# env variables
+.env
+
+# uploaded/media files
 media/
 
-# =========================
-# STATIC FILES
-# =========================
+# collected static files
 staticfiles/
-static/
 
-# =========================
-# PYTHON TOOLING
-# =========================
-.pytest_cache/
-.mypy_cache/
-.coverage
-htmlcov/
+# cache
+__pycache__/
 
-# =========================
-# IDE
-# =========================
+# local sqlite
+db.sqlite3
+
+# vscode
 .vscode/
-.idea/
-
-# =========================
-# OS FILES
-# =========================
-.DS_Store
-Thumbs.db
-
-# =========================
-# CELERY
-# =========================
-celerybeat-schedule
-
-# =========================
-# DOCKER
-# =========================
-*.pid
-
-# =========================
-# SECRET FILES
-# =========================
-*.pem
-*.key
-
-# =========================
-# UPLOADS
-# =========================
-uploads/
-
-# =========================
-# MIGRATION CACHE
-# =========================
-*/migrations/__pycache__/
-
-# =========================
-# PYTHON VERSION
-# =========================
-.python-version
