@@ -232,3 +232,11 @@ CORS_ALLOWED_ORIGINS = config(
     "CORS_ALLOWED_ORIGINS",
     default=""
 ).split(",")
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOW_HEADERS = [
+    "*",
+]
