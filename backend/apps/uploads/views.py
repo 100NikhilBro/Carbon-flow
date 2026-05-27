@@ -119,11 +119,27 @@ class UploadFileAPIView(APIView):
             }
         )
 
-        # =========================
+               # =========================
         # START CELERY TASK
         # =========================
 
-        process_upload_job.delay(
+        # =========================
+        # PRODUCTION ASYNC VERSION
+        # =========================
+
+        # process_upload_job.delay(
+        #     str(upload_job.id)
+        # )
+
+        # =========================
+        # TEMPORARY SYNC EXECUTION
+        # =========================
+        # Used for free-tier deployment
+        # where Celery worker hosting
+        # is unavailable.
+        # =========================
+
+        process_upload_job(
             str(upload_job.id)
         )
 
