@@ -27,6 +27,12 @@ urlpatterns = [
         "api/dashboard/",
         include("apps.dashboard.urls")
     ),
+
+    path(
+    "api/",
+    include("apps.common.urls")
+),
+    
 ]
 
 
