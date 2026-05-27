@@ -2,6 +2,8 @@ from apps.ingestion.parsers.sap_parser import SAPParser
 from apps.ingestion.parsers.utility_parser import UtilityParser
 from apps.ingestion.parsers.travel_parser import TravelParser
 
+from apps.common.utils import normalize_unit
+
 import csv
 import requests
 
@@ -26,16 +28,25 @@ def process_upload_job(upload_job_id):
 
     try:
 
+        # =========================
+        # FETCH FILE
+        # =========================
+
         file_url = upload_job.file
 
-        response = requests.get(file_url)
+        response = requests.get(
+            file_url
+        )
 
-        csv_file = StringIO(response.text)
+        csv_file = StringIO(
+            response.text
+        )
 
-        reader = csv.DictReader(csv_file)
+        reader = csv.DictReader(
+            csv_file
+        )
 
         rows = list(reader)
-
 
         # =========================
         # SELECT PARSER
@@ -59,13 +70,13 @@ def process_upload_job(upload_job_id):
                 "Invalid source type"
             )
 
-
         # =========================
         # PARSE DATA
         # =========================
 
-        parsed_records = parser.parse(rows)
-
+        parsed_records = parser.parse(
+            rows
+        )
 
         # =========================
         # PROCESS RECORDS
@@ -73,10 +84,42 @@ def process_upload_job(upload_job_id):
 
         for record in parsed_records:
 
-
             is_flagged = False
 
             flag_reason = None
+
+            quantity = record.get(
+                "quantity"
+            )
+
+            unit = record.get(
+                "unit"
+            )
+
+            # =========================
+            # SAFETY CHECKS
+            # =========================
+
+            if quantity is None:
+
+                continue
+
+            quantity = float(quantity)
+
+            # =========================
+            # UNIT NORMALIZATION
+            # =========================
+
+            normalized_quantity, normalized_unit = (
+                normalize_unit(
+                    quantity,
+                    unit
+                )
+            )
+
+            # =========================
+            # VALIDATION
+            # =========================
 
             VALID_UNITS = [
                 "L",
@@ -85,23 +128,6 @@ def process_upload_job(upload_job_id):
                 "kWh",
                 "km",
             ]
-
-            quantity = record.get(
-                "quantity"
-            )
-
-            # =========================
-            # SAFETY CHECK
-            # =========================
-
-            if quantity is None:
-                continue
-
-            quantity = float(quantity)
-
-            # =========================
-            # VALIDATIONS
-            # =========================
 
             if (
                 not record["activity_type"]
@@ -114,7 +140,7 @@ def process_upload_job(upload_job_id):
                 )
 
             elif (
-                quantity <= 0
+                normalized_quantity <= 0
             ):
 
                 is_flagged = True
@@ -125,7 +151,7 @@ def process_upload_job(upload_job_id):
                 )
 
             elif (
-                record["unit"]
+                normalized_unit
                 not in VALID_UNITS
             ):
 
@@ -133,21 +159,25 @@ def process_upload_job(upload_job_id):
 
                 flag_reason = (
                     f"Invalid unit: "
-                    f"{record['unit']}"
+                    f"{unit}"
                 )
 
-            
-
             # =========================
-            # SIMPLE EMISSION ENGINE
+            # EMISSION FACTORS
             # =========================
 
             EMISSION_FACTORS = {
+
                 "Diesel": 2.5,
+
                 "Petrol": 2.3,
+
                 "Natural Gas": 2.0,
+
                 "Electricity": 0.8,
+
                 "Flight": 0.15,
+
                 "Train": 0.05,
             }
 
@@ -156,11 +186,18 @@ def process_upload_job(upload_job_id):
                 1
             )
 
+            # =========================
+            # EMISSION CALCULATION
+            # =========================
 
-            co2e_emissions = (
-                quantity * factor
+            co2e_emissions = round(
+                normalized_quantity * factor,
+                2
             )
 
+            # =========================
+            # SAVE ESG RECORD
+            # =========================
 
             ESGRecord.objects.create(
 
@@ -178,15 +215,19 @@ def process_upload_job(upload_job_id):
 
                 quantity=quantity,
 
-                unit=record["unit"],
+                unit=unit,
 
-                normalized_unit=record[
-                    "unit"
-                ],
+                normalized_quantity=
+                    normalized_quantity,
 
-                co2e_emissions=co2e_emissions,
+                normalized_unit=
+                    normalized_unit,
 
-                source_reference=upload_job.original_file_name,
+                co2e_emissions=
+                    co2e_emissions,
+
+                source_reference=
+                    upload_job.original_file_name,
 
                 occurred_on=record[
                     "occurred_on"
@@ -198,6 +239,10 @@ def process_upload_job(upload_job_id):
 
                 flag_reason=flag_reason,
             )
+
+        # =========================
+        # JOB COMPLETED
+        # =========================
 
         upload_job.status = "completed"
 
