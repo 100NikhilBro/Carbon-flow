@@ -1,3 +1,16 @@
-from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-# Create your views here.
+
+class HealthCheckAPIView(APIView):
+
+    authentication_classes = []
+
+    permission_classes = []
+
+    def get(self, request):
+
+        return Response({
+            "status": "ok",
+            "message": "CarbonFlow backend running"
+        })
