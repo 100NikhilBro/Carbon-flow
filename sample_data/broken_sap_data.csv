@@ -1,0 +1,4 @@
+plant_code,fuel_type,quantity,unit,transaction_date
+PLANT_101,Diesel,-500,L,2026-05-01
+PLANT_205,Natural Gas,1000,INVALID,2026-05-03
+PLANT_310,,750,L,2026-05-04

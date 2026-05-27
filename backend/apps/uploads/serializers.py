@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
 
-class UploadFileSerializer(serializers.Serializer):
-
-    company_id = serializers.UUIDField()
+class UploadFileSerializer(
+    serializers.Serializer
+):
 
     source_type = serializers.ChoiceField(
         choices=[

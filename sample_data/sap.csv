@@ -1,0 +1,4 @@
+fuel_type,quantity,unit,transaction_date
+Diesel,500,L,2026-05-01
+Petrol,200,L,2026-05-02
+Natural Gas,1000,m3,2026-05-03

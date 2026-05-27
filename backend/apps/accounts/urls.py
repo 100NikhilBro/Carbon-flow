@@ -5,7 +5,13 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from apps.accounts.views import RegisterAPIView
+
+from apps.accounts.views import (
+
+    RegisterAPIView,
+
+    MeAPIView,
+)
 
 
 urlpatterns = [
@@ -27,4 +33,10 @@ urlpatterns = [
         TokenRefreshView.as_view(),
         name="token_refresh",
     ),
+
+    path(
+    "me/",
+    MeAPIView.as_view(),
+    name="me",
+),
 ]

@@ -1,0 +1,20 @@
+# virtual env
+venv/
+
+# env variables
+.env
+
+# uploaded/media files
+media/
+
+# collected static files
+staticfiles/
+
+# cache
+__pycache__/
+
+# local sqlite
+db.sqlite3
+
+# vscode
+.vscode/
