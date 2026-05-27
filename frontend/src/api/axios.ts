@@ -1,10 +1,9 @@
 import axios from "axios";
 
-
 const axiosInstance = axios.create({
 
   baseURL:
-    "http://127.0.0.1:8000/api",
+    "https://carbon-flow-kyb4.onrender.com/api",
 
   headers: {
 
@@ -75,7 +74,7 @@ axiosInstance.interceptors.response.use(
         const response =
           await axios.post(
 
-            "http://127.0.0.1:8000/api/auth/refresh/",
+            "https://carbon-flow-kyb4.onrender.com/api/auth/refresh/",
 
             {
               refresh:
@@ -132,6 +131,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export default axiosInstance;
