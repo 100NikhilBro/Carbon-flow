@@ -1,20 +1,40 @@
 UNIT_CONVERSIONS = {
 
-    "L": ("L", 1.0),
+    # =========================
+    # VOLUME
+    # =========================
 
-    "kL": ("L", 1000.0),
+    "l": ("L", 1.0),
+
+    "kl": ("L", 1000.0),
 
     "gallon": ("L", 3.785),
+
+    # =========================
+    # MASS
+    # =========================
 
     "kg": ("kg", 1.0),
 
     "tonne": ("kg", 1000.0),
 
+    # =========================
+    # GAS
+    # =========================
+
     "m3": ("m3", 1.0),
 
-    "kWh": ("kWh", 1.0),
+    # =========================
+    # ELECTRICITY
+    # =========================
 
-    "MWh": ("kWh", 1000.0),
+    "kwh": ("kWh", 1.0),
+
+    "mwh": ("kWh", 1000.0),
+
+    # =========================
+    # DISTANCE
+    # =========================
 
     "km": ("km", 1.0),
 
@@ -27,15 +47,43 @@ def normalize_unit(
     unit
 ):
 
-    if unit in UNIT_CONVERSIONS:
+    if unit is None:
+
+        return quantity, unit
+
+    # =========================
+    # CLEAN UNIT
+    # =========================
+
+    cleaned_unit = (
+        str(unit)
+        .strip()
+        .lower()
+    )
+
+    # =========================
+    # NORMALIZE
+    # =========================
+
+    if cleaned_unit in UNIT_CONVERSIONS:
 
         normalized_unit, factor = (
-            UNIT_CONVERSIONS[unit]
+            UNIT_CONVERSIONS[
+                cleaned_unit
+            ]
+        )
+
+        normalized_quantity = (
+            quantity * factor
         )
 
         return (
-            quantity * factor,
+            normalized_quantity,
             normalized_unit
         )
+
+    # =========================
+    # UNKNOWN UNIT
+    # =========================
 
     return quantity, unit

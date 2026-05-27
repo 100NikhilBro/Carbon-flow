@@ -68,7 +68,14 @@ class ESGRecord(models.Model):
 
     source_reference = models.TextField()
 
-    occurred_on = models.DateField()
+    # =========================
+    # DATE CAN BE NULL
+    # =========================
+
+    occurred_on = models.DateField(
+        null=True,
+        blank=True
+    )
 
     review_status = models.CharField(
         max_length=50,
