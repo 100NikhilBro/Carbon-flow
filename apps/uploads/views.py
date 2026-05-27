@@ -48,6 +48,12 @@ class UploadFileAPIView(APIView):
 
         company = request.user.company
 
+        if not company:
+            return Response(
+                {"error": "No company assigned to your account"},
+                   status=status.HTTP_403_FORBIDDEN
+            )
+
         uploaded_file = serializer.validated_data[
             "file"
         ]

@@ -16,10 +16,6 @@ from apps.esg.models import ESGRecord
 @shared_task
 def process_upload_job(upload_job_id):
 
-    print("\n========================")
-    print("TASK STARTED")
-    print("========================\n")
-
     upload_job = UploadJob.objects.get(
         id=upload_job_id
     )
@@ -32,9 +28,6 @@ def process_upload_job(upload_job_id):
 
         file_url = upload_job.file
 
-        print("FILE URL:")
-        print(file_url)
-
         response = requests.get(file_url)
 
         csv_file = StringIO(response.text)
@@ -43,8 +36,6 @@ def process_upload_job(upload_job_id):
 
         rows = list(reader)
 
-        print("\nRAW CSV ROWS:")
-        print(rows)
 
         # =========================
         # SELECT PARSER
@@ -68,8 +59,6 @@ def process_upload_job(upload_job_id):
                 "Invalid source type"
             )
 
-        print("\nSELECTED PARSER:")
-        print(upload_job.source_type)
 
         # =========================
         # PARSE DATA
@@ -77,8 +66,6 @@ def process_upload_job(upload_job_id):
 
         parsed_records = parser.parse(rows)
 
-        print("\nPARSED RECORDS:")
-        print(parsed_records)
 
         # =========================
         # PROCESS RECORDS
@@ -86,8 +73,6 @@ def process_upload_job(upload_job_id):
 
         for record in parsed_records:
 
-            print("\nPROCESSING RECORD:")
-            print(record)
 
             is_flagged = False
 
@@ -105,25 +90,14 @@ def process_upload_job(upload_job_id):
                 "quantity"
             )
 
-            print("\nRAW QUANTITY:")
-            print(quantity)
-
             # =========================
             # SAFETY CHECK
             # =========================
 
             if quantity is None:
-
-                print(
-                    "\nQUANTITY IS NONE -> SKIPPING"
-                )
-
                 continue
 
             quantity = float(quantity)
-
-            print("\nFLOAT QUANTITY:")
-            print(quantity)
 
             # =========================
             # VALIDATIONS
@@ -162,9 +136,7 @@ def process_upload_job(upload_job_id):
                     f"{record['unit']}"
                 )
 
-            print("\nVALIDATION STATUS:")
-            print(is_flagged)
-            print(flag_reason)
+            
 
             # =========================
             # SIMPLE EMISSION ENGINE
@@ -184,15 +156,11 @@ def process_upload_job(upload_job_id):
                 1
             )
 
-            print("\nEMISSION FACTOR:")
-            print(factor)
 
             co2e_emissions = (
                 quantity * factor
             )
 
-            print("\nCO2e:")
-            print(co2e_emissions)
 
             ESGRecord.objects.create(
 
@@ -231,13 +199,9 @@ def process_upload_job(upload_job_id):
                 flag_reason=flag_reason,
             )
 
-            print("\nRECORD SAVED SUCCESSFULLY")
-
         upload_job.status = "completed"
 
         upload_job.save()
-
-        print("\nUPLOAD COMPLETED")
 
     except Exception as e:
 
@@ -246,8 +210,5 @@ def process_upload_job(upload_job_id):
         upload_job.error_message = str(e)
 
         upload_job.save()
-
-        print("\nERROR OCCURRED:")
-        print(str(e))
 
         raise e
