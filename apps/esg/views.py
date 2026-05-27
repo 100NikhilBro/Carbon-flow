@@ -38,6 +38,12 @@ class ApproveESGRecordAPIView(APIView):
             company=request.user.company
         )
 
+        if record.review_status == "approved":
+            return Response(
+                {"error": "Record already locked for audit"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         record.review_status = "approved"
 
         record.reviewed_by = request.user.username
@@ -66,10 +72,7 @@ class ApproveESGRecordAPIView(APIView):
 
         channel_layer = get_channel_layer()
 
-        group_name = (
-    f"company_{record.company.id}"
-)
-        
+        group_name = f"company_{record.company.id}"
 
         async_to_sync(channel_layer.group_send)(
             group_name,
@@ -105,6 +108,12 @@ class RejectESGRecordAPIView(APIView):
             company=request.user.company
         )
 
+        if record.review_status == "approved":
+            return Response(
+                {"error": "Record already locked for audit"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         analyst_notes = request.data.get(
             "analyst_notes"
         )
@@ -139,9 +148,7 @@ class RejectESGRecordAPIView(APIView):
 
         channel_layer = get_channel_layer()
 
-        group_name = (
-    f"company_{record.company.id}"
-)
+        group_name = f"company_{record.company.id}"
 
         async_to_sync(channel_layer.group_send)(
             group_name,
