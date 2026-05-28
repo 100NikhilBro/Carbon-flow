@@ -31,6 +31,12 @@ export const useRecords = () => {
   const [error, setError] =
     useState("");
 
+  const [count, setCount] =
+    useState(0);
+
+  const [currentPage, setCurrentPage] =
+    useState(1);
+
   const [filters, setFilters] =
     useState({
 
@@ -56,10 +62,19 @@ export const useRecords = () => {
         setError("");
 
         const data =
-          await getRecords(filters);
+          await getRecords({
+
+            ...filters,
+
+            page: currentPage,
+          });
 
         setRecords(
-          data.results || data
+          data.results || []
+        );
+
+        setCount(
+          data.count || 0
         );
 
       } catch (error) {
@@ -205,7 +220,7 @@ export const useRecords = () => {
 
     fetchRecords();
 
-  }, [filters]);
+  }, [filters, currentPage]);
 
 
   return {
@@ -215,6 +230,12 @@ export const useRecords = () => {
     loading,
 
     error,
+
+    count,
+
+    currentPage,
+
+    setCurrentPage,
 
     filters,
 
