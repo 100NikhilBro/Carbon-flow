@@ -15,7 +15,21 @@ Multi-tenant ESG data ingestion and analyst review platform.
 | Audit Logging | https://drive.google.com/file/d/1z4A0j4ZCWChEzhpAlf_-OyUWrHyZxbNn/view |
 
 ## Architecture
-<!-- Add architecture diagram here -->
+
+<p align="center">
+  <a href="https://drive.google.com/file/d/1QED-iiKqEjKQRbJXGl4WCm01JklS0J6P/view?usp=sharing">
+    <img 
+      src="https://drive.google.com/thumbnail?id=1QED-iiKqEjKQRbJXGl4WCm01JklS0J6P&sz=w1600" 
+      alt="CarbonFlow Architecture Diagram"
+      width="100%"
+    />
+  </a>
+</p>
+
+<p align="center">
+  <i>High-level multi-tenant ESG ingestion and analytics architecture</i>
+</p>
+
 
 ## Tech Stack
 Django · DRF · PostgreSQL · Celery · Redis · React · TypeScript · Tailwind · Cloudinary · Vercel · Render
