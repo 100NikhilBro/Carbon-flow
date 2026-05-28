@@ -12,7 +12,7 @@ Multi-tenant ESG data ingestion and analyst review platform.
 |---|---|
 | Full Walkthrough | https://youtu.be/8Z_uB9ub8AA |
 | Multi-Tenancy Demo | https://drive.google.com/file/d/1q-u4pm2xhyB7b-z0YaKHZmBCPTKW88aO/view |
-| Audit Logging | https://drive.google.com/file/d/1z4A0j4ZCWChEzhpAlf_-OyUWrHyZxbNn/view |
+| Audit Logging | https://drive.google.com/file/d/11UGYygRNiSLPV2lBvrY0FNd-rcULSCeq/view?usp=sharing |
 
 ## Architecture
 
