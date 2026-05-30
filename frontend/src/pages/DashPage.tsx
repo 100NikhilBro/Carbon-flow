@@ -113,12 +113,33 @@ export default function DashboardPage() {
   }
 
   // ... rest of your stats, charts, etc. (same as before)
-  const stats = [
-    { label: 'Total Records', value: summary?.total_records || 0, icon: FileText, color: 'text-blue-600' },
-    { label: 'Approved', value: summary?.approved_records || 0, icon: CheckCircle, color: 'text-green-600' },
-    { label: 'Pending', value: summary?.pending_reviews || 0, icon: Clock, color: 'text-yellow-600' },
-    { label: 'Flagged', value: summary?.flagged_records || 0, icon: AlertCircle, color: 'text-red-600' },
-  ];
+ const stats = [
+  {
+    label: 'Total Records',
+    value: summary?.total_records || 0,
+    icon: FileText,
+    color: 'text-blue-600',
+  },
+  {
+    label: 'Approved',
+    value: summary?.approved_records || 0,
+    icon: CheckCircle,
+    color: 'text-green-600',
+  },
+  {
+    label: 'Pending',
+    value: summary?.pending_records || 0,
+    icon: Clock,
+    color: 'text-yellow-600',
+  },
+  {
+    label: 'Flagged',
+    value: summary?.flagged_records || 0,
+    icon: AlertCircle,
+    color: 'text-red-600',
+  },
+];
+  
   const PIE_COLORS = ['#16a34a', '#facc15', '#dc2626'];
 
   return (
