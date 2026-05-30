@@ -15,19 +15,17 @@ Several engineering tradeoffs were intentionally made to keep the system deliver
 
 ---
 
-# 1. Async Queue Architecture Designed but Not Fully Deployed
+# 1. Async Queue Architecture
 
-The ingestion pipeline was originally designed around:
+The ingestion pipeline uses:
 
 * Celery workers
 * Redis queue
 * asynchronous background processing
 
-Intended architecture:
+Architecture:
 
-```text
 Upload → Queue → Worker → Validation → Processing → DB
-```
 
 This architecture isolates heavy CSV processing from the API request lifecycle and improves:
 
@@ -36,48 +34,19 @@ This architecture isolates heavy CSV processing from the API request lifecycle a
 * scalability
 * fault isolation
 
-However, the deployed version currently runs ingestion synchronously.
+## Deployment Tradeoff
 
-## Why
-
-Free-tier hosting platforms created infrastructure limitations for background workers.
-
-Multiple deployment approaches were explored including:
-
-* Render workers
-* Railway
-* Fly.io
-* Heroku alternatives
-
-Most stable worker-based deployments required:
-
-* paid infrastructure
-* managed Redis setup
-* more advanced DevOps configuration
-
-Due to assignment timeline constraints, synchronous ingestion was selected for deployment.
+To keep infrastructure costs low, the Celery worker runs alongside the Django application within the same Render service instead of being deployed as a dedicated worker service.
 
 ## Known Tradeoffs
 
-| Problem             | Impact                                  |
-| ------------------- | --------------------------------------- |
-| Tight coupling      | API waits for ingestion completion      |
-| Higher latency      | Upload requests become slower           |
-| Lower throughput    | Fewer concurrent uploads                |
-| Increased CPU usage | Parsing occurs inside request lifecycle |
+| Problem | Impact |
+|----------|----------|
+| Shared resources | API and worker share CPU and memory |
+| Limited scaling | Worker and API cannot scale independently |
+| Resource contention | Heavy ingestion jobs may affect API performance |
 
-Even though deployment is synchronous, the internal architecture was intentionally designed around queue-worker separation.
-
-In production, queue-based ingestion would still be preferred because it supports:
-
-* horizontal worker scaling
-* retry mechanisms
-* workload isolation
-* backpressure handling
-* fault tolerance
-
-Under heavy ingestion traffic, producer speed may become faster than consumer processing speed, creating backpressure and resource exhaustion risks.
-
+For larger production deployments, API servers and Celery workers should be deployed as separate services with independent autoscaling.
 ---
 
 # 2. CSV Chosen as Universal Ingestion Contract
