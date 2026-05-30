@@ -195,7 +195,7 @@ This was important because ESG uploads may contain:
 
 The production architecture supports fully asynchronous ingestion.
 
-Due to free-tier deployment limitations, synchronous execution was temporarily used for deployment compatibility.
+The deployed system uses Celery and Redis for asynchronous background processing of ingestion jobs.
 
 ---
 
