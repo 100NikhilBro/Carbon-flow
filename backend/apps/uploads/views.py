@@ -127,9 +127,9 @@ class UploadFileAPIView(APIView):
         # PRODUCTION ASYNC VERSION
         # =========================
 
-        # process_upload_job.delay(
-        #     str(upload_job.id)
-        # )
+        process_upload_job.delay(
+            str(upload_job.id)
+        )
 
         # =========================
         # TEMPORARY SYNC EXECUTION
@@ -139,9 +139,9 @@ class UploadFileAPIView(APIView):
         # is unavailable.
         # =========================
 
-        process_upload_job(
-            str(upload_job.id)
-        )
+        # process_upload_job(
+        #     str(upload_job.id)
+        # )
 
         return Response(
             {
