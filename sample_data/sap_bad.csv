@@ -1,0 +1,6 @@
+plant_code,fuel_type,quantity,unit,transaction_date
+PLANT_9999,Diesel,500,L,2026-05-01
+PLANT_1000,Diesel,-50,L,2026-05-02
+PLANT_1000,UnknownFuel,100,L,2026-05-03
+PLANT_1000,Petrol,200,XYZ,2026-05-04
+PLANT_1000,Diesel,300,L,invalid-date
